@@ -10,7 +10,13 @@
     "lint": "eslint src/**/*.{ts,tsx}",
     "lint:fix": "eslint --fix 'src/**/*.{ts,tsx}'"
   },
-  "keywords": [],
+  "keywords": [
+    "react",
+    "vite",
+    "netlify",
+    "netlify-functions",
+    "serverless"
+  ],
   "author": "Mohamed Samara (https://github.com/mohamedsamara)",
   "license": "MIT",
   "repository": {
