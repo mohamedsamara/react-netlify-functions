@@ -28,6 +28,7 @@
   },
   "homepage": "https://github.com/mohamedsamara/react-netlify-functions#readme",
   "dependencies": {
+    "@fontsource/poppins": "^4.5.8",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-router": "^6.3.0",
