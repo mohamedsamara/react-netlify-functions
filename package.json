@@ -29,15 +29,21 @@
   "homepage": "https://github.com/mohamedsamara/react-netlify-functions#readme",
   "dependencies": {
     "@fontsource/poppins": "^4.5.8",
+    "immer": "^9.0.15",
+    "moment": "^2.29.4",
     "react": "^18.0.0",
+    "react-datepicker": "^4.8.0",
     "react-dom": "^18.0.0",
+    "react-dropzone": "^14.2.2",
     "react-router": "^6.3.0",
-    "react-router-dom": "^6.3.0"
+    "react-router-dom": "^6.3.0",
+    "use-immer": "^0.7.0"
   },
   "devDependencies": {
     "@tailwindcss/line-clamp": "^0.4.0",
     "@types/node": "^18.0.0",
     "@types/react": "^18.0.0",
+    "@types/react-datepicker": "^4.4.2",
     "@types/react-dom": "^18.0.0",
     "@types/react-router-dom": "^5.3.3",
     "@typescript-eslint/eslint-plugin": "^5.29.0",
