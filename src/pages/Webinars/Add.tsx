@@ -1,29 +1,35 @@
+import { MouseEvent } from 'react';
 import { Draft } from 'immer';
 import { useImmer } from 'use-immer';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import * as moment from 'moment';
 
+import {
+  CLOUDINARY_CLOUDNAME,
+  CLOUDINARY_UNSIGNED_PRESET,
+} from '../../constants';
 import Layout from 'components/Layouts/Default';
 import ImageUploader from 'components/ImageUploader';
 
-interface WebinarState {
+type WebinarState = {
   title: string;
   description: string;
   webinar_url: string;
   start_date: Date;
   end_date: Date;
-  banner: any;
-}
+  banner_url: string;
+};
 
 const AddWebinar = () => {
+  const [banner, setBanner] = useImmer<File[]>([]);
   const [webinar, setWebinar] = useImmer<WebinarState>({
     title: '',
     description: '',
     webinar_url: '',
+    banner_url: '',
     start_date: moment().toDate(),
     end_date: moment().toDate(),
-    banner: null,
   });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -31,6 +37,64 @@ const AddWebinar = () => {
     setWebinar((draft: Draft<WebinarState>) => {
       draft[name] = value;
     });
+  };
+
+  const resetWebinarForm = () => {
+    setWebinar((draft: Draft<WebinarState>) => {
+      draft.title = '';
+      draft.description = '';
+      draft.webinar_url = '';
+      draft.banner_url = '';
+      draft.start_date = moment().toDate();
+      draft.end_date = moment().toDate();
+    });
+    setBanner([]);
+  };
+
+  const handleSubmit = async (e: MouseEvent<HTMLFormElement>) => {
+    try {
+      e.preventDefault();
+
+      const formData = new FormData();
+      formData.append('file', banner[0]);
+      formData.append('tags', 'browser_upload');
+      formData.append('upload_preset', CLOUDINARY_UNSIGNED_PRESET);
+
+      const uploadResponse = await fetch(
+        `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUDNAME}/image/upload`,
+        {
+          method: 'post',
+          body: formData,
+        },
+      );
+
+      if (uploadResponse.status === 200) {
+        const image = await uploadResponse.json();
+
+        const payload = {
+          ...webinar,
+          banner_url: image.url,
+          start_date: webinar.start_date.toString(),
+          end_date: webinar.end_date.toString(),
+        };
+
+        const response = await fetch('/.netlify/functions/add-webinar', {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          method: 'POST',
+          body: JSON.stringify(payload),
+        });
+
+        if (response.status === 200) {
+          const data = await response.json();
+          const { success } = data;
+          if (success) resetWebinarForm();
+        }
+      }
+    } catch (error) {
+      console.log('error', error);
+    }
   };
 
   return (
@@ -42,7 +106,7 @@ const AddWebinar = () => {
               Add Webinar
             </h1>
 
-            <form className="">
+            <form onSubmit={handleSubmit}>
               <div className="flex flex-col w-full my-5">
                 <label htmlFor="title" className="text-gray-500 mb-2">
                   Title
@@ -53,6 +117,7 @@ const AddWebinar = () => {
                   type="text"
                   placeholder="Title"
                   className="appearance-none border-2 border-gray-100 rounded-lg px-4 py-2 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:shadow-lg"
+                  value={webinar.title}
                   onChange={(e) => handleInputChange(e.target.value, 'title')}
                 />
               </div>
@@ -67,6 +132,7 @@ const AddWebinar = () => {
                   type="text"
                   placeholder="Description"
                   className="appearance-none border-2 border-gray-100 rounded-lg px-4 py-2 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:shadow-lg"
+                  value={webinar.description}
                   onChange={(e) =>
                     handleInputChange(e.target.value, 'description')
                   }
@@ -83,6 +149,7 @@ const AddWebinar = () => {
                   type="text"
                   placeholder="Webinar URL"
                   className="appearance-none border-2 border-gray-100 rounded-lg px-4 py-2 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:shadow-lg"
+                  value={webinar.webinar_url}
                   onChange={(e) =>
                     handleInputChange(e.target.value, 'webinar_url')
                   }
@@ -125,11 +192,18 @@ const AddWebinar = () => {
                   Banner
                 </label>
                 <ImageUploader
+                  initialFiles={banner}
                   handleDrop={(files) => {
-                    handleInputChange(files, 'banner');
+                    setBanner(files);
                   }}
                 />
               </div>
+              <button
+                type="submit"
+                className="bg-gray-100 p-4 rounded-lg w-full"
+              >
+                Add Webinar
+              </button>
             </form>
           </div>
         </div>

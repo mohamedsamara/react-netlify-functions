@@ -1,13 +1,15 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 interface ImageUploaderProps {
+  initialFiles: File[];
   multiple?: false;
   handleDrop: (files: File[]) => void;
 }
 
 const ImageUploader = (props: ImageUploaderProps) => {
-  const { multiple, handleDrop } = props;
+  const { initialFiles, multiple, handleDrop } = props;
+  const [files, setFiles] = useState<File[]>(initialFiles);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     handleDrop(acceptedFiles);
@@ -22,12 +24,24 @@ const ImageUploader = (props: ImageUploaderProps) => {
     },
   });
 
-  const acceptedFileItems = acceptedFiles.map((file: File, index: number) => {
+  useEffect(() => {
+    if (initialFiles) {
+      setFiles(initialFiles);
+    }
+  }, [initialFiles]);
+
+  useEffect(() => {
+    if (acceptedFiles) {
+      setFiles(acceptedFiles);
+    }
+  }, [acceptedFiles]);
+
+  const acceptedFileItems = files.map((file: File, index: number) => {
     const src = URL.createObjectURL(file);
 
     return (
       <li key={index} className="mr-4">
-        <img src={src} alt={src} />
+        <img src={src} alt={src} className="w-12 h-12" />
       </li>
     );
   });
