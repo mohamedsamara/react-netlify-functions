@@ -3,7 +3,7 @@ import { Draft } from 'immer';
 import { useImmer } from 'use-immer';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import * as moment from 'moment';
+import moment from 'moment';
 
 import {
   CLOUDINARY_CLOUDNAME,
@@ -60,38 +60,40 @@ const AddWebinar = () => {
       formData.append('tags', 'browser_upload');
       formData.append('upload_preset', CLOUDINARY_UNSIGNED_PRESET);
 
-      const uploadResponse = await fetch(
-        `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUDNAME}/image/upload`,
-        {
-          method: 'post',
-          body: formData,
+      // const uploadResponse = await fetch(
+      //   `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUDNAME}/image/upload`,
+      //   {
+      //     method: 'post',
+      //     body: formData,
+      //   },
+      // );
+
+      // if (uploadResponse.status === 200) {
+      // const image = await uploadResponse.json();
+
+      const payload = {
+        ...webinar,
+        // banner_url: image.url,
+        start_date: webinar.start_date.toString(),
+        end_date: webinar.end_date.toString(),
+      };
+
+      const response = await fetch('/.netlify/functions/add-webinar', {
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+        method: 'POST',
+        body: JSON.stringify(payload),
+      });
 
-      if (uploadResponse.status === 200) {
-        const image = await uploadResponse.json();
+      if (response.status === 200) {
+        const data = await response.json();
+        console.log('data', data);
 
-        const payload = {
-          ...webinar,
-          banner_url: image.url,
-          start_date: webinar.start_date.toString(),
-          end_date: webinar.end_date.toString(),
-        };
-
-        const response = await fetch('/.netlify/functions/add-webinar', {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          method: 'POST',
-          body: JSON.stringify(payload),
-        });
-
-        if (response.status === 200) {
-          const data = await response.json();
-          const { success } = data;
-          if (success) resetWebinarForm();
-        }
+        const { success } = data;
+        if (success) resetWebinarForm();
       }
+      // }
     } catch (error) {
       console.log('error', error);
     }

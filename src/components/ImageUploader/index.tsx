@@ -13,6 +13,7 @@ const ImageUploader = (props: ImageUploaderProps) => {
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     handleDrop(acceptedFiles);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
