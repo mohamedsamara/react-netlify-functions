@@ -4,7 +4,7 @@ import NotMatch from 'pages/NotMatch';
 import Home from 'pages/Home';
 import Webinars from 'pages/Webinars';
 import AddWebinar from 'pages/Webinars/Add';
-import EditWebinar from 'pages/Webinars/Edit';
+import Webinar from 'pages/Webinar';
 
 const Routes = () => {
   const element = useRoutes([
@@ -21,11 +21,12 @@ const Routes = () => {
           element: <AddWebinar />,
         },
         {
-          path: 'edit',
-          element: <EditWebinar />,
+          path: ':id',
+          element: <Webinar />,
         },
       ],
     },
+
     { path: '*', element: <NotMatch /> },
   ]);
 

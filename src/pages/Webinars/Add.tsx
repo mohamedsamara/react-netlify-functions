@@ -9,40 +9,27 @@ import {
   CLOUDINARY_CLOUDNAME,
   CLOUDINARY_UNSIGNED_PRESET,
 } from '../../constants';
+import { IWebinar } from './types';
+import { webinarState } from './utils';
 import Layout from 'components/Layouts/Default';
 import ImageUploader from 'components/ImageUploader';
 
-type WebinarState = {
-  title: string;
-  description: string;
-  webinar_url: string;
-  start_date: Date;
-  end_date: Date;
-  banner_url: string;
-};
-
 const AddWebinar = () => {
   const [banner, setBanner] = useImmer<File[]>([]);
-  const [webinar, setWebinar] = useImmer<WebinarState>({
-    title: '',
-    description: '',
-    webinar_url: '',
-    banner_url: '',
-    start_date: moment().toDate(),
-    end_date: moment().toDate(),
-  });
+  const [webinar, setWebinar] = useImmer<IWebinar>(webinarState);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleInputChange = (value: any, name: keyof WebinarState) => {
-    setWebinar((draft: Draft<WebinarState>) => {
+  const handleInputChange = (value: any, name: keyof IWebinar) => {
+    setWebinar((draft: Draft<IWebinar>) => {
       draft[name] = value;
     });
   };
 
   const resetWebinarForm = () => {
-    setWebinar((draft: Draft<WebinarState>) => {
+    setWebinar((draft: Draft<IWebinar>) => {
       draft.title = '';
       draft.description = '';
+      draft.speaker = '';
       draft.webinar_url = '';
       draft.banner_url = '';
       draft.start_date = moment().toDate();
@@ -60,40 +47,38 @@ const AddWebinar = () => {
       formData.append('tags', 'browser_upload');
       formData.append('upload_preset', CLOUDINARY_UNSIGNED_PRESET);
 
-      // const uploadResponse = await fetch(
-      //   `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUDNAME}/image/upload`,
-      //   {
-      //     method: 'post',
-      //     body: formData,
-      //   },
-      // );
-
-      // if (uploadResponse.status === 200) {
-      // const image = await uploadResponse.json();
-
-      const payload = {
-        ...webinar,
-        // banner_url: image.url,
-        start_date: webinar.start_date.toString(),
-        end_date: webinar.end_date.toString(),
-      };
-
-      const response = await fetch('/.netlify/functions/add-webinar', {
-        headers: {
-          'Content-Type': 'application/json',
+      const uploadResponse = await fetch(
+        `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUDNAME}/image/upload`,
+        {
+          method: 'post',
+          body: formData,
         },
-        method: 'POST',
-        body: JSON.stringify(payload),
-      });
+      );
 
-      if (response.status === 200) {
-        const data = await response.json();
-        console.log('data', data);
+      if (uploadResponse.status === 200) {
+        const image = await uploadResponse.json();
 
-        const { success } = data;
-        if (success) resetWebinarForm();
+        const payload = {
+          ...webinar,
+          banner_url: image.url,
+          start_date: webinar.start_date.toString(),
+          end_date: webinar.end_date.toString(),
+        };
+
+        const response = await fetch('/.netlify/functions/add-webinar', {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          method: 'POST',
+          body: JSON.stringify(payload),
+        });
+
+        if (response.status === 200) {
+          const data = await response.json();
+          const { success } = data;
+          if (success) resetWebinarForm();
+        }
       }
-      // }
     } catch (error) {
       console.log('error', error);
     }
@@ -138,6 +123,21 @@ const AddWebinar = () => {
                   onChange={(e) =>
                     handleInputChange(e.target.value, 'description')
                   }
+                />
+              </div>
+
+              <div className="flex flex-col w-full my-5">
+                <label htmlFor="description" className="text-gray-500 mb-2">
+                  Speaker
+                </label>
+                <input
+                  id="speaker"
+                  name="speaker"
+                  type="text"
+                  placeholder="Speaker"
+                  className="appearance-none border-2 border-gray-100 rounded-lg px-4 py-2 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:shadow-lg"
+                  value={webinar.speaker}
+                  onChange={(e) => handleInputChange(e.target.value, 'speaker')}
                 />
               </div>
 

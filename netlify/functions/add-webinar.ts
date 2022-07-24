@@ -1,13 +1,7 @@
 import { Handler } from '@netlify/functions';
+import short from 'short-uuid';
 
-interface Webinar {
-  title: string;
-  description: string;
-  webinar_url: string;
-  start_date: Date;
-  end_date: Date;
-  banner_url: string;
-}
+import db, { Webinar } from '../database';
 
 const handler: Handler = async (event) => {
   try {
@@ -15,13 +9,26 @@ const handler: Handler = async (event) => {
       const {
         title,
         description,
+        speaker,
         webinar_url,
         start_date,
         end_date,
         banner_url,
       } = JSON.parse(event.body) as Webinar;
 
-      console.log(event.body);
+      const webinar = {
+        id: short.uuid(),
+        title,
+        description,
+        speaker,
+        webinar_url,
+        start_date,
+        end_date,
+        banner_url,
+      };
+
+      db.data?.webinars.push(webinar);
+      await db.write();
 
       return {
         statusCode: 200,

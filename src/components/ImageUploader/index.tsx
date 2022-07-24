@@ -42,7 +42,11 @@ const ImageUploader = (props: ImageUploaderProps) => {
 
     return (
       <li key={index} className="mr-4">
-        <img src={src} alt={src} className="w-12 h-12" />
+        <img
+          src={src}
+          alt={src}
+          className="w-20 h-20 rounded-lg object-cover"
+        />
       </li>
     );
   });
