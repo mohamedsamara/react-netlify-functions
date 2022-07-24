@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useImmer } from 'use-immer';
 import MTZ from 'moment-timezone';
@@ -7,10 +7,11 @@ import Layout from 'components/Layouts/Default';
 import { webinarState } from 'pages/Webinars/utils';
 import { IWebinar } from 'pages/Webinars/types';
 import EmbeddedVideo from 'components/EmbeddedVideo';
+import Spinner from 'components/Spinner';
 
 const Webinar = () => {
   const { id } = useParams();
-
+  const [loading, setLoading] = useState(true);
   const [webinar, setWebinar] = useImmer<IWebinar>(webinarState);
 
   const from = new Date(webinar?.start_date);
@@ -43,8 +44,18 @@ const Webinar = () => {
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Spinner />
+      </div>
+    );
+  }
 
   return (
     <Layout>

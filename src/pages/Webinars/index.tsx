@@ -44,9 +44,15 @@ const Webinars = () => {
     }
   };
 
-  if (loading) return <Spinner />;
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Spinner />
+      </div>
+    );
+  }
 
-  if (!loading && webinars.length === 0)
+  if (!loading && !upcoming) {
     return (
       <NoResult title="No Webinars Found">
         <Link to="/webinars/add" className="block text-blue-500 text-lg mt-6">
@@ -54,20 +60,23 @@ const Webinars = () => {
         </Link>
       </NoResult>
     );
+  }
 
-  return (
-    <Layout>
-      <div className="flex flex-col min-h-full bg-gray-100 py-[40px]">
-        <div className="container mx-auto px-4 lg:px-0">
-          <Link to="/webinars/add" className="text-blue-500 text-lg">
-            Add Webinar
-          </Link>
-          <Upcoming webinar={upcoming} />
-          <List webinars={webinars} />
+  if (!loading) {
+    return (
+      <Layout>
+        <div className="flex flex-col min-h-full bg-gray-100 py-[40px]">
+          <div className="container mx-auto px-4 lg:px-0">
+            <Link to="/webinars/add" className="text-blue-500 text-lg">
+              Add Webinar
+            </Link>
+            <Upcoming webinar={upcoming} />
+            {webinars.length !== 0 && <List webinars={webinars} />}
+          </div>
         </div>
-      </div>
-    </Layout>
-  );
+      </Layout>
+    );
+  }
 };
 
 export default Webinars;
