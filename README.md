@@ -1,4 +1,4 @@
-# Vite React
+# React Netlify Functions
 
 ## Description
 
@@ -6,7 +6,6 @@ This project is an example of using React with Netlify Serverless Functions
 
 <br />
 <img src='public/images/ui.png'/>
-<br />
 <br />
 
 ## Quick start
