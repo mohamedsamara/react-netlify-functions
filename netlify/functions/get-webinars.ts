@@ -9,7 +9,7 @@ const handler: Handler = async () => {
       statusCode: 200,
       body: JSON.stringify({
         success: true,
-        webinars: db.data?.webinars,
+        webinars: db.data?.webinars ?? [],
       }),
     };
   } catch (error) {

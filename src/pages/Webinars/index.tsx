@@ -8,6 +8,7 @@ import Layout from 'components/Layouts/Default';
 import Upcoming from './Upcoming';
 import List from './List';
 import Spinner from 'components/Spinner';
+import NoResult from 'components/NoResult';
 
 const Webinars = () => {
   const [loading, setLoading] = useState(true);
@@ -44,6 +45,15 @@ const Webinars = () => {
   };
 
   if (loading) return <Spinner />;
+
+  if (!loading && webinars.length === 0)
+    return (
+      <NoResult title="No Webinars Found">
+        <Link to="/" className="block text-blue-500 mt-6">
+          Home
+        </Link>
+      </NoResult>
+    );
 
   return (
     <Layout>
