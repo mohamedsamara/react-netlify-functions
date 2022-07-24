@@ -62,21 +62,19 @@ const Webinars = () => {
     );
   }
 
-  if (!loading) {
-    return (
-      <Layout>
-        <div className="flex flex-col min-h-full bg-gray-100 py-[40px]">
-          <div className="container mx-auto px-4 lg:px-0">
-            <Link to="/webinars/add" className="text-blue-500 text-lg">
-              Add Webinar
-            </Link>
-            <Upcoming webinar={upcoming} />
-            {webinars.length !== 0 && <List webinars={webinars} />}
-          </div>
+  return (
+    <Layout>
+      <div className="flex flex-col min-h-full bg-gray-100 py-[40px]">
+        <div className="container mx-auto px-4 lg:px-0">
+          <Link to="/webinars/add" className="text-blue-500 text-lg">
+            Add Webinar
+          </Link>
+          <Upcoming webinar={upcoming} />
+          {webinars.length !== 0 && <List webinars={webinars} />}
         </div>
-      </Layout>
-    );
-  }
+      </div>
+    </Layout>
+  );
 };
 
 export default Webinars;
