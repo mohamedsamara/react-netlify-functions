@@ -49,8 +49,8 @@ const Webinars = () => {
   if (!loading && webinars.length === 0)
     return (
       <NoResult title="No Webinars Found">
-        <Link to="/" className="block text-blue-500 mt-6">
-          Home
+        <Link to="/webinars/add" className="block text-blue-500 text-lg mt-6">
+          Add Webinar
         </Link>
       </NoResult>
     );
