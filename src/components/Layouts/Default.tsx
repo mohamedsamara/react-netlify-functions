@@ -12,7 +12,7 @@ const Layout = (props: LayoutProps) => {
   return (
     <>
       <Header />
-      <main className="h-full">{children}</main>
+      <main className="h-screen">{children}</main>
     </>
   );
 };

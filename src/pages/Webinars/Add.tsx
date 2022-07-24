@@ -80,7 +80,7 @@ const AddWebinar = () => {
         }
       }
     } catch (error) {
-      console.log('error', error);
+      console.log(error);
     }
   };
 

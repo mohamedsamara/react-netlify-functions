@@ -6,8 +6,6 @@ const handler: Handler = async (event) => {
     if (event.body) {
       const { id } = JSON.parse(event.body) as Webinar;
 
-      console.log('id', id);
-
       await db.read();
       const webinar = db.data?.webinars.filter((w) => w.id === id);
 
