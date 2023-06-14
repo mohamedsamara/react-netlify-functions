@@ -17,35 +17,35 @@ This project is an example of using React with Netlify Serverless Functions
 ## Start netlify dev
 
 ```
-$ yarn start
+yarn start
 ```
 
 ## Start development
 
 ```
-$ yarn dev
+yarn dev
 ```
 
 ## Simple build for production
 
 ```
-$ yarn build
+yarn build
 ```
 
 ## Preview production build
 
 ```
-$ yarn preview
+yarn preview
 ```
 
 ## Format with Prettier
 
 ```
-$ yarn format
+yarn format
 ```
 
 ## Run Linter
 
 ```
-$ yarn lint
+yarn lint
 ```
